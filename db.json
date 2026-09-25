@@ -1,13 +1,13 @@
 {
   "tutores":[
-    {"id":1, "nome": "Rubi","telefone": "479999100100"},
-    {"id":2, "nome": "Garnet","telefone": "479999100100"},
-    {"id":3, "nome": "Safira","telefone": "479999100100"}
+    {"id":1, "nome": "Steven","telefone": "479999100100"},
+    {"id":2, "nome": "Ben","telefone": "479999100100"},
+    {"id":3, "nome": "Big J","telefone": "479999100100"}
 
   ],
   "pets":[
-    {"id":1, "nome": "Liaum", "especie":"Leão", "tutorId":1},
-    {"id":2, "nome": "XLR8", "especie":"Alien", "tutorId":2},
-    {"id":3, "nome": "Iggy", "especie":"Cachorro", "tutorId":3}
+    {"id":1, "nome": "Liaum", "idade": "12", "especie":"Leão", "tutorId":1},
+    {"id":2, "nome": "XLR8", "idade": "13", "especie":"Alien", "tutorId":2},
+    {"id":3, "nome": "Iggy", "idade": "22", "especie":"Cachorro", "tutorId":3}
   ]
 }
