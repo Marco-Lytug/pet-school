@@ -1,35 +1,32 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
-
 const API_URL = 'http://localhost:3000';
-
 const pets = ref([]);
 const tutores = ref([]);
 const loading = ref(true);
-
-
 async function carregarDados() {
   const respostaPets = await fetch(`${API_URL}/pets`);
   pets.value = await respostaPets.json();
-  console.log('Pets:', pets.value )
-
+  console.log('Pets:', pets.value);
   const respostaTutores = await fetch(`${API_URL}/tutores`);
   tutores.value = await respostaTutores.json();
-  console.log('Tutores:', tutores.value )
+  console.log('Tutores:', tutores.value);
   loading.value = false;
 }
-
-function nomeTutor(tutorId){
-  for (const tutor of tutores.value){
-    tutor.id = tutorId
-    if (tutor.id == tutor.value){
-      return tutor.value
+function nomeDoTutor(tutorId) {
+  for (const tutor of tutores.value) {
+    console.log('tutor', tutorId);
+    // tutor.id == tutorId
+    if (tutor.id === tutorId) {
+      console.log("tutor",tutor)
+      return tutor.nome;
     }
-  }
-  return 'Tutor não encontrado'
-}
 
+  }
+  return 'Tutor Não Encontrado!';
+}
+// Recebe o tutorId do pet e procura o tutor correspondente.
 onMounted(carregarDados);
 </script>
 
@@ -42,31 +39,34 @@ onMounted(carregarDados);
       </p>
     </header>
 
-    <RouterLink class="btn btn-primary" :to="{ name: 'addPet' }">
+    <RouterLink
+      class="btn btn-primary"
+      :to="{ name: 'addPet' }"
+    >
       Adicionar Pet
     </RouterLink>
-  </div>
-  <div>
 
-    <table class="table table-stripped tabla-hover">
+    <table class="table table-striped table-hover">
       <thead>
-        <th>Id</th>
-        <th>Nome</th>
-        <th>Idade</th>
-        <th>Raça</th>
-        <th>Tutor</th>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Especie</th>
+          <th>Tutor</th>
+        </tr>
       </thead>
-      <tbody>
-        <tr v-for="pet in pets"
-        :key="pet.id" >
-        <td>{{ pet.id }}</td>
-        <td>{{ pet.nome }}</td>
-        <td>{{ pet.idade }}</td>
-        <td>{{ pet.especie }}</td>
-        <td>{{ nomeTutor(pet.nome) }}</td>
 
-      </tr>
-    </tbody>
-  </table>
-</div>
+      <tbody>
+        <tr
+          v-for="pet in pets"
+          :key="pet.id"
+        >
+          <td>{{ pet.id }}</td>
+          <td>{{ pet.nome }}</td>
+          <td>{{ pet.especie }}</td>
+          <td>{{ nomeDoTutor(pet.tutorId) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
