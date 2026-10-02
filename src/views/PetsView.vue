@@ -7,23 +7,28 @@ const tutores = ref([]);
 const loading = ref(true);
 async function carregarDados() {
   const respostaPets = await fetch(`${API_URL}/pets`);
-  pets.value = await respostaPets.json();
-  console.log('Pets:', pets.value);
+  pets.value = (await respostaPets.json()).map((pet) => ({
+    ...pet,
+    tutorId: Number(pet.tutorId),
+  }));
+
   const respostaTutores = await fetch(`${API_URL}/tutores`);
-  tutores.value = await respostaTutores.json();
-  console.log('Tutores:', tutores.value);
+  tutores.value = (await respostaTutores.json()).map((tutor) => ({
+    ...tutor,
+    id: Number(tutor.id),
+  }));
+
   loading.value = false;
 }
 function nomeDoTutor(tutorId) {
+  const idBuscado = Number(tutorId);
+
   for (const tutor of tutores.value) {
-    console.log('tutor', tutorId);
-    // tutor.id == tutorId
-    if (tutor.id === tutorId) {
-      console.log("tutor",tutor)
+    if (Number(tutor.id) === idBuscado) {
       return tutor.nome;
     }
-
   }
+
   return 'Tutor Não Encontrado!';
 }
 // Recebe o tutorId do pet e procura o tutor correspondente.
@@ -53,6 +58,7 @@ onMounted(carregarDados);
           <th>Nome</th>
           <th>Especie</th>
           <th>Tutor</th>
+          <th>Ações</th>
         </tr>
       </thead>
 
@@ -65,6 +71,7 @@ onMounted(carregarDados);
           <td>{{ pet.nome }}</td>
           <td>{{ pet.especie }}</td>
           <td>{{ nomeDoTutor(pet.tutorId) }}</td>
+          <td><RouterLink :to="`/pets/${pet.id}`">Visualizar</RouterLink></td>
         </tr>
       </tbody>
     </table>
