@@ -1,13 +1,38 @@
 {
-  "tutores":[
-    {"id":1, "nome": "Steven","telefone": "479999100100"},
-    {"id":2, "nome": "Ben","telefone": "479999100100"},
-    {"id":3, "nome": "Big J","telefone": "479999100100"}
-
+  "tutores": [
+    {
+      "id": "2",
+      "nome": "Ben",
+      "telefone": "479999100100"
+    }
   ],
-  "pets":[
-    {"id":1, "nome": "Liaum", "idade": "12", "especie":"Leão", "tutorId":1},
-    {"id":2, "nome": "XLR8", "idade": "13", "especie":"Alien", "tutorId":2},
-    {"id":3, "nome": "Iggy", "idade": "22", "especie":"Cachorro", "tutorId":3}
-  ]
+  "pets": [
+    {
+      "id": "2",
+      "nome": "XLR8",
+      "idade": "13",
+      "especie": "Alien",
+      "tutorId": 2
+    },
+    {
+      "id": "3",
+      "nome": "Iggy",
+      "idade": "22",
+      "especie": "Cachorro",
+      "tutorId": 3
+    },
+    {
+      "nome": "Ola",
+      "especie": "Pássaro",
+      "tutorId": 2,
+      "id": "RvcbYzxiANA"
+    },
+    {
+      "nome": "aaa",
+      "especie": "Cachorro",
+      "tutorId": 2,
+      "id": "0CbP3qhJd5U"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
