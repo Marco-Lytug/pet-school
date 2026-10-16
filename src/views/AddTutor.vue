@@ -63,25 +63,17 @@ onMounted(carregarTutores);
         <input
           id="telefone"
           v-model="novoTutor.telefone"
-          type="text"
+          type="tel"
           class="form-control"
           placeholder="Digite o número de telefone do tutor"
           required
         />
       </div>
-      <div class="col-md-6">
-        <label for="tutor" class="form-label">Tutor</label>
-        <select id="tutor" v-model.number="novoPet.tutorId" class="form-select" required>
-          <option value="" disabled selected>Selecione o tutor</option>
-          <option v-for="tutor in tutores" :key="tutor.id" :value="tutor.id">
-            {{ tutor.nome }}
-          </option>
-        </select>
-      </div>
+
 
       <div class="col-12">
-        <button type="submit" class="btn btn-primary">Salvar Pet</button>
-        <button type="button" class="btn btn-secondary ms-2" @click="router.push({ name: 'pets' })">
+        <button type="submit" class="btn btn-primary">Salvar Tutores</button>
+        <button type="button" class="btn btn-secondary ms-2" @click="router.push({ name: 'tutores' })">
           Cancelar
         </button>
       </div>

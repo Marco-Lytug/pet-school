@@ -8,10 +8,14 @@ const loading = ref(true);
 
 async function carregarDados() {
   const respostaTutores = await fetch(`${API_URL}/tutores`);
-  tutores.value = (await respostaTutores.json()).map((tutor) => ({
-    ...tutor,
-    id: Number(tutor.id),
-  }));
+  tutores.value = await respostaTutores.json();
+
+  // tutores.value = (await respostaTutores.json()).map((tutor) => ({
+  //   ...tutor,
+  //   id: Number(tutor.id),
+  // }));
+
+  console.table('tutores', tutores.value);
 
 
   loading.value = false;
@@ -29,7 +33,6 @@ async function excluirTutor(id) {
   }
 }
 
-// Recebe o tutorId do pet e procura o tutor correspondente.
 onMounted(carregarDados);
 </script>
 
