@@ -1,34 +1,52 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
+
 const API_URL = 'http://localhost:3000';
+const pets = ref([]);
 const tutores = ref([]);
 const loading = ref(true);
 
-
 async function carregarDados() {
-  const respostaTutores = await fetch(`${API_URL}/tutores`);
-  tutores.value = await respostaTutores.json();
+  loading.value = true;
 
-  // tutores.value = (await respostaTutores.json()).map((tutor) => ({
-  //   ...tutor,
-  //   id: Number(tutor.id),
-  // }));
+  try {
+    const [respostaPets, respostaTutores] = await Promise.all([
+      fetch(`${API_URL}/pets`),
+      fetch(`${API_URL}/tutores`),
+    ]);
 
-  console.table('tutores', tutores.value);
+    if (!respostaPets.ok || !respostaTutores.ok) {
+      throw new Error('Não foi possível carregar os dados.');
+    }
 
-
-  loading.value = false;
+    pets.value = await respostaPets.json();
+    tutores.value = await respostaTutores.json();
+  } catch (error) {
+    console.error('Erro ao carregar dados:', error);
+  } finally {
+    loading.value = false;
+  }
 }
 
+function quantidadePets(tutorId) {
+  return pets.value.filter((pet) => pet.tutorId === tutorId).length;
+}
+
+function nomesPets(tutorId) {
+  return pets.value
+    .filter((pet) => pet.tutorId === tutorId)
+    .map((pet) => pet.nome);
+}
 
 async function excluirTutor(id) {
   const confirmarExclusao = window.confirm('Deseja realmente excluir o tutor?');
 
-  if(confirmarExclusao){
+  if (confirmarExclusao) {
     await fetch(`${API_URL}/tutores/${id}`, {
       method: 'DELETE',
     });
+
     await carregarDados();
   }
 }
@@ -45,36 +63,46 @@ onMounted(carregarDados);
       </p>
     </header>
 
-    <RouterLink
-      class="btn btn-primary"
-      :to="{ name: 'addTutor' }"
-    >
-      Adicionar Tutores
+    <RouterLink class="btn btn-primary mb-3" :to="{ name: 'addTutor' }">
+      Adicionar Tutor
     </RouterLink>
 
-    <table class="table table-striped table-hover">
+    <p v-if="loading">Carregando tutores...</p>
+
+    <table v-else class="table table-striped table-hover">
       <thead>
         <tr>
           <th>ID</th>
-          <th>Nome</th>
-          <th>Número de Telefone</th>
+          <th>Nome Completo</th>
+          <th>CPF / CNPJ</th>
+          <th>Telefone / Celular / WhatsApp</th>
+          <th>E-mail</th>
+          <th>Pets (Quantidade)</th>
+          <th>Nome dos Pets</th>
+          <th>Ações</th>
         </tr>
       </thead>
 
       <tbody>
-        <tr
-          v-for="tutor in tutores"
-          :key="tutor.id"
-        >
+        <tr v-for="tutor in tutores" :key="tutor.id">
           <td>{{ tutor.id }}</td>
           <td>{{ tutor.nome }}</td>
+          <td>{{ tutor.cpf }}</td>
           <td>{{ tutor.telefone }}</td>
+          <td>{{ tutor.email }}</td>
+          <td>{{ quantidadePets(tutor.id) }}</td>
+          <td>{{ nomesPets(tutor.id).join(', ') || 'Nenhum pet cadastrado' }}</td>
           <td>
-            <RouterLink :to="`/tutores/${tutor.id}`">Visualizar</RouterLink>
-             <button class="btn btn-danger" @click="excluirTutor(tutor.id)">Excluir</button>
+            <button class="btn btn-danger" @click="excluirTutor(tutor.id)">
+              Excluir
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <p v-if="!loading" class="text-body-secondary mb-0">
+      Exibindo {{ tutores.length }} tutores
+    </p>
   </div>
 </template>

@@ -1,94 +1,111 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
+
 const API_URL = 'http://localhost:3000';
+
 const pets = ref([]);
 const tutores = ref([]);
 const loading = ref(true);
+
+
 async function carregarDados() {
-  const respostaPets = await fetch(`${API_URL}/pets`);
-  pets.value = (await respostaPets.json()).map((pet) => ({
-    ...pet,
-    tutorId: Number(pet.tutorId),
-  }));
+ const respostaPets = await fetch(`${API_URL}/pets`);
+ pets.value = await respostaPets.json();
 
-  const respostaTutores = await fetch(`${API_URL}/tutores`);
-  tutores.value = (await respostaTutores.json()).map((tutor) => ({
-    ...tutor,
-    id: Number(tutor.id),
-  }));
+ console.log('Pets:', pets.value);
 
-  loading.value = false;
+ const respostaTutores = await fetch(`${API_URL}/tutores`);
+ tutores.value = await respostaTutores.json();
+
+ console.log('Tutores:', tutores.value);
+
+ loading.value = false;
 }
+
 function nomeDoTutor(tutorId) {
-  const idBuscado = Number(tutorId);
-
-  for (const tutor of tutores.value) {
-    if (Number(tutor.id) === idBuscado) {
-      return tutor.nome;
-    }
-  }
-
-  return 'Tutor Não Encontrado!';
+ for (const tutor of tutores.value) {
+ console.log('tutor', tutorId);
+ // tutor.id == tutorId
+ if (tutor.id === tutorId) {
+ return tutor.nome;
+ }
+ }
+ return 'Tutor Não Encontrado!';
 }
-
+//por que ela depende do servidor, ela pode fazer varias ações juntas
 async function excluirPet(id) {
-  const confirmarExclusao = window.confirm('Deseja realmente excluir o pet?');
+ const confirmarExclusão = window.confirm('Deseja realmente excluir o pet?')
 
-  if(confirmarExclusao){
-    await fetch(`${API_URL}/pets/${id}`, {
-      method: 'DELETE',
-    });
-    await carregarDados();
-  }
+ if(confirmarExclusão){
+ //lógica para excluir o pet
+ await fetch(`${API_URL}/pets/${id}`,{
+ method: 'DELETE'
+ });
+ await carregarDados();
+ }// recarrega os dados após a exclusão
+
 }
+
 
 // Recebe o tutorId do pet e procura o tutor correspondente.
+
 onMounted(carregarDados);
 </script>
 
 <template>
-  <div>
-    <header class="mb-4">
-      <h1 class="text-2xl font-bold">Listagem de Pets</h1>
-      <p class="text-body-secondary mb-0">
-        Listagem dos Pets cadastrados no sistema.
-      </p>
-    </header>
+ <div>
+ <header class="mb-4">
+ <h1 class="text-2xl font-bold">Listagem de Pets</h1>
+ <p class="text-body-secondary mb-0">
+ Listagem dos Pets cadastrados no sistema.
+ </p>
+ </header>
 
-    <RouterLink
-      class="btn btn-primary"
-      :to="{ name: 'addPet' }"
-    >
-      Adicionar Pet
-    </RouterLink>
+ <RouterLink
+ class="btn btn-primary"
+ :to="{ name: 'addPet' }"
+ >
+ Adicionar Pet
+ </RouterLink>
 
-    <table class="table table-striped table-hover">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nome</th>
-          <th>Especie</th>
-          <th>Tutor</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
+ <table class="table table-striped table-hover">
+ <thead>
+ <tr>
+ <th>ID</th>
+ <th>Nome</th>
+ <th>Especie</th>
+ <th>Tutor</th>
+ <th>
+ Detalhes
+ </th>
+ </tr>
+ </thead>
 
-      <tbody>
-        <tr
-          v-for="pet in pets"
-          :key="pet.id"
-        >
-          <td>{{ pet.id }}</td>
-          <td>{{ pet.nome }}</td>
-          <td>{{ pet.especie }}</td>
-          <td>{{ nomeDoTutor(pet.tutorId) }}</td>
-          <td>
-            <RouterLink :to="`/pets/${pet.id}`">Visualizar</RouterLink>
-             <button class="btn btn-danger" @click="excluirPet(pet.id)">Excluir</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+ <tbody>
+ <tr
+ v-for="pet in pets"
+ :key="pet.id"
+ >
+ <td>{{ pet.id }}</td>
+ <td>{{ pet.nome }}</td>
+ <td>{{ pet.especie }}</td>
+ <td>{{ nomeDoTutor(pet.tutorId) }}</td>
+
+ <td>
+ <RouterLink :to="`/pets/${pet.id}` ">
+ Visualizar
+ </RouterLink>
+ </td>
+
+ <td>
+ <button class="btn btn-danger" @click="excluirPet(pet.id) ">
+ Excluir
+ </button>
+ </td>
+
+ </tr>
+ </tbody>
+ </table>
+ </div>
 </template>
